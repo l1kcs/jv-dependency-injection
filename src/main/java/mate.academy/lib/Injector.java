@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import mate.academy.service.FileReaderService;
 import mate.academy.service.ProductParser;
 import mate.academy.service.ProductService;
@@ -22,7 +24,10 @@ public class Injector {
 
     public Object getInstance(Class<?> interfaceClazz) {
         Object clazzImplementationInstance = null;
-        Class<?> clazz = findImplementation(interfaceClazz);
+        Class<?> clazz = Optional.ofNullable(findImplementation(interfaceClazz))
+                .orElseThrow(() -> new RuntimeException(
+                        "No implementation found for " + interfaceClazz.getName()
+                ));
         if (!clazz.isAnnotationPresent(Component.class)) {
             throw new RuntimeException("For class "
                     + clazz.getName()
